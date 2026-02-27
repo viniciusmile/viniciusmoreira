@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vinícius Milere — Data Engineer</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Oswald:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #0a0a0a;
+    --gold: #FFD700;
+    --red: #E8001C;
+    --white: #F5F0E8;
+    --gray: #1a1a1a;
+    --mid: #2e2e2e;
+    --accent: #FF6B00;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  /* GRAIN TEXTURE OVERLAY */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 999;
+    opacity: 0.4;
+  }
+
+  .wrapper {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0;
+  }
+
+  /* ── HEADER ── */
+  .header {
+    background: var(--black);
+    border-bottom: 4px solid var(--gold);
+    padding: 48px 48px 32px;
+    position: relative;
+    overflow: hidden;
+    animation: slideDown 0.7s ease both;
+  }
+
+  .header::before {
+    content: '//DATA//';
+    position: absolute;
+    top: -10px;
+    right: -20px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 140px;
+    color: rgba(255,215,0,0.04);
+    letter-spacing: 10px;
+    pointer-events: none;
+    user-select: none;
+  }
+
+  .header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 24px;
+  }
+
+  .name-block {}
+
+  .label-tag {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--gold);
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    display: block;
+  }
+
+  h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 72px;
+    letter-spacing: 4px;
+    line-height: 0.9;
+    color: var(--white);
+  }
+
+  h1 span {
+    color: var(--gold);
+  }
+
+  .title-bar {
+    margin-top: 12px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .title-bar .role {
+    font-family: 'Oswald', sans-serif;
+    font-size: 14px;
+    font-weight: 300;
+    letter-spacing: 6px;
+    text-transform: uppercase;
+    color: var(--white);
+  }
+
+  .title-bar .dot {
+    width: 6px; height: 6px;
+    background: var(--red);
+    border-radius: 50%;
+    animation: blink 1.2s infinite;
+  }
+
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.2; }
+  }
+
+  .contact-block {
+    text-align: right;
+    flex-shrink: 0;
+  }
+
+  .contact-block a, .contact-block p {
+    display: block;
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--white);
+    text-decoration: none;
+    margin-bottom: 6px;
+    opacity: 0.8;
+    transition: color 0.2s;
+  }
+
+  .contact-block a:hover { color: var(--gold); opacity: 1; }
+
+  .contact-block .location {
+    font-family: 'Oswald', sans-serif;
+    font-weight: 600;
+    font-size: 12px;
+    color: var(--gold);
+    letter-spacing: 2px;
+    margin-bottom: 12px;
+  }
+
+  .bars {
+    display: flex;
+    gap: 3px;
+    margin-top: 16px;
+    justify-content: flex-end;
+  }
+
+  .bars span {
+    width: 3px;
+    background: var(--gold);
+    border-radius: 2px;
+    animation: eq 1.1s ease-in-out infinite alternate;
+  }
+
+  .bars span:nth-child(1) { height: 12px; animation-delay: 0s; }
+  .bars span:nth-child(2) { height: 20px; animation-delay: 0.15s; }
+  .bars span:nth-child(3) { height: 8px; animation-delay: 0.3s; }
+  .bars span:nth-child(4) { height: 24px; animation-delay: 0.45s; }
+  .bars span:nth-child(5) { height: 14px; animation-delay: 0.6s; }
+  .bars span:nth-child(6) { height: 18px; animation-delay: 0.2s; }
+  .bars span:nth-child(7) { height: 10px; animation-delay: 0.5s; }
+
+  @keyframes eq {
+    from { transform: scaleY(1); }
+    to { transform: scaleY(0.3); }
+  }
+
+  .summary-strip {
+    margin-top: 28px;
+    padding: 16px 20px;
+    background: var(--gray);
+    border-left: 4px solid var(--red);
+    font-family: 'Space Mono', monospace;
+    font-size: 10.5px;
+    color: rgba(245,240,232,0.85);
+    line-height: 1.8;
+  }
+
+  .summary-strip strong {
+    color: var(--gold);
+    font-weight: 700;
+  }
+
+  /* ── MAIN BODY ── */
+  .body {
+    display: grid;
+    grid-template-columns: 1fr 280px;
+    gap: 0;
+  }
+
+  .main-col {
+    padding: 36px 48px 48px;
+    border-right: 1px solid var(--mid);
+  }
+
+  .side-col {
+    padding: 36px 28px 48px;
+    background: var(--gray);
+  }
+
+  /* SECTION HEADER */
+  .section {
+    margin-bottom: 36px;
+    animation: fadeUp 0.6s ease both;
+  }
+
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    letter-spacing: 3px;
+    color: var(--gold);
+    border-bottom: 2px solid var(--mid);
+    padding-bottom: 6px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .section-title::before {
+    content: '';
+    width: 4px;
+    height: 28px;
+    background: var(--red);
+    display: inline-block;
+    flex-shrink: 0;
+  }
+
+  /* EXPERIENCE ITEM */
+  .exp-item {
+    margin-bottom: 24px;
+    padding-left: 16px;
+    border-left: 2px solid var(--mid);
+    transition: border-color 0.2s;
+  }
+
+  .exp-item:hover { border-left-color: var(--gold); }
+
+  .exp-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 2px;
+  }
+
+  .exp-company {
+    font-family: 'Oswald', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    color: var(--white);
+    text-transform: uppercase;
+  }
+
+  .exp-period {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    color: var(--gold);
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .exp-role {
+    font-family: 'Space Mono', monospace;
+    font-size: 9.5px;
+    color: var(--accent);
+    margin-bottom: 8px;
+    font-style: italic;
+  }
+
+  .exp-bullets {
+    list-style: none;
+    padding: 0;
+  }
+
+  .exp-bullets li {
+    padding-left: 16px;
+    position: relative;
+    color: rgba(245,240,232,0.78);
+    margin-bottom: 4px;
+    font-size: 10px;
+  }
+
+  .exp-bullets li::before {
+    content: '▸';
+    position: absolute;
+    left: 0;
+    color: var(--red);
+    font-size: 8px;
+    top: 2px;
+  }
+
+  /* PROJECT ITEM */
+  .project-item {
+    background: rgba(255,215,0,0.04);
+    border: 1px solid var(--mid);
+    padding: 14px 16px;
+    margin-bottom: 14px;
+    transition: background 0.2s, border-color 0.2s;
+  }
+
+  .project-item:hover {
+    background: rgba(255,215,0,0.08);
+    border-color: var(--gold);
+  }
+
+  .project-name {
+    font-family: 'Oswald', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    color: var(--gold);
+    margin-bottom: 6px;
+    text-transform: uppercase;
+  }
+
+  .project-item p {
+    font-size: 10px;
+    color: rgba(245,240,232,0.75);
+    line-height: 1.7;
+  }
+
+  /* SIDE COLUMN */
+  .side-section {
+    margin-bottom: 28px;
+  }
+
+  .side-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20px;
+    letter-spacing: 3px;
+    color: var(--gold);
+    margin-bottom: 14px;
+    border-bottom: 1px solid var(--mid);
+    padding-bottom: 4px;
+  }
+
+  /* SKILL BARS */
+  .skill-item {
+    margin-bottom: 10px;
+  }
+
+  .skill-label {
+    display: flex;
+    justify-content: space-between;
+    font-family: 'Space Mono', monospace;
+    font-size: 9.5px;
+    color: var(--white);
+    margin-bottom: 4px;
+  }
+
+  .skill-label span:last-child {
+    color: var(--gold);
+    font-size: 9px;
+  }
+
+  .skill-bar-bg {
+    height: 4px;
+    background: var(--mid);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .skill-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--red), var(--gold));
+    border-radius: 2px;
+    transform-origin: left;
+    animation: grow 1s ease both;
+    animation-delay: 0.5s;
+    transform: scaleX(0);
+  }
+
+  @keyframes grow {
+    to { transform: scaleX(1); }
+  }
+
+  /* CERT BADGES */
+  .cert-item {
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+    margin-bottom: 8px;
+    padding: 8px 10px;
+    background: rgba(255,255,255,0.03);
+    border-left: 2px solid transparent;
+    transition: border-color 0.2s;
+  }
+
+  .cert-item:hover { border-left-color: var(--gold); }
+
+  .cert-icon {
+    width: 18px;
+    height: 18px;
+    border-radius: 3px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 9px;
+    font-weight: 700;
+    font-family: 'Oswald', sans-serif;
+  }
+
+  .cert-icon.aws { background: var(--accent); color: var(--black); }
+  .cert-icon.gcp { background: #4285F4; color: white; }
+  .cert-icon.ms { background: #00A4EF; color: white; }
+  .cert-icon.other { background: var(--mid); color: var(--gold); }
+
+  .cert-text {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    color: rgba(245,240,232,0.8);
+    line-height: 1.5;
+  }
+
+  .cert-text strong {
+    display: block;
+    color: var(--white);
+    font-size: 9.5px;
+  }
+
+  /* EDUCATION */
+  .edu-item {
+    margin-bottom: 14px;
+  }
+
+  .edu-degree {
+    font-family: 'Oswald', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--white);
+    letter-spacing: 1px;
+  }
+
+  .edu-school {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    color: var(--gold);
+    margin-top: 2px;
+  }
+
+  .edu-period {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    color: rgba(245,240,232,0.5);
+  }
+
+  /* LANGUAGE */
+  .lang-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+  }
+
+  .lang-level {
+    display: flex;
+    gap: 3px;
+  }
+
+  .lang-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--mid);
+  }
+
+  .lang-dot.active { background: var(--gold); }
+
+  /* FOOTER */
+  .footer {
+    background: var(--black);
+    border-top: 1px solid var(--mid);
+    padding: 16px 48px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .footer p {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    color: rgba(245,240,232,0.3);
+    letter-spacing: 2px;
+  }
+
+  .footer .vinyl {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 14px;
+    letter-spacing: 3px;
+    color: rgba(255,215,0,0.3);
+  }
+
+  @keyframes slideDown {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Print */
+  @media print {
+    body { background: white; color: black; }
+    .header::before { display: none; }
+    body::before { display: none; }
+    .bars span { animation: none; height: 12px !important; }
+    .skill-bar-fill { animation: none; transform: scaleX(1); }
+  }
+</style>
+</head>
+<body>
+<div class="wrapper">
+
+  <!-- HEADER -->
+  <header class="header">
+    <div class="header-top">
+      <div class="name-block">
+        <span class="label-tag">// DATA ENGINEER · ANALYTICS · ML //</span>
+        <h1>VINÍCIUS<br><span>MILERE</span></h1>
+        <div class="title-bar">
+          <div class="dot"></div>
+          <span class="role">Cloud · BigQuery · AWS · Machine Learning</span>
+        </div>
+      </div>
+      <div class="contact-block">
+        <p class="location">📍 VITÓRIA — ES</p>
+        <a href="tel:+5527999750760">(27) 99975-0760</a>
+        <a href="mailto:viniciusmile@gmail.com">viniciusmile@gmail.com</a>
+        <a href="https://linkedin.com/in/viniciusmoreira1987" target="_blank">linkedin.com/in/viniciusmoreira1987</a>
+        <a href="https://credly.com/users/vinicius-milere-moreira" target="_blank">credly.com/users/vinicius-milere-moreira</a>
+        <div class="bars">
+          <span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+        </div>
+      </div>
+    </div>
+    <div class="summary-strip">
+      Profissional em transição para <strong>Engenharia de Dados / Data Analytics</strong>, com <strong>+13 anos</strong> em infraestrutura de TI, automação e projetos estratégicos no setor público. Cursando <strong>Ciência de Dados</strong> (bolsista) e em fase final de <strong>Engenharia de Produção</strong>. Especializado em pipelines ETL/ELT, BigQuery, ML, Looker e multi-cloud (<strong>AWS + GCP</strong>). Busca atuar em ambientes de dados em larga escala com foco em valor real.
+    </div>
+  </header>
+
+  <!-- BODY -->
+  <div class="body">
+
+    <!-- MAIN COLUMN -->
+    <main class="main-col">
+
+      <!-- EXPERIENCE -->
+      <div class="section">
+        <div class="section-title">Experiência</div>
+
+        <div class="exp-item">
+          <div class="exp-header">
+            <span class="exp-company">Tribunal de Justiça — ES (TJES)</span>
+            <span class="exp-period">2012 — 2025</span>
+          </div>
+          <div class="exp-role">Servidor Público · Infraestrutura de TI</div>
+          <ul class="exp-bullets">
+            <li>Gestão de infraestrutura de TI com foco em disponibilidade e segurança de sistemas críticos.</li>
+            <li>Projetos de modernização tecnológica, automação de processos e redução de falhas operacionais.</li>
+            <li>Governança de TI, integração de sistemas e comunicação entre equipes multidisciplinares.</li>
+            <li>Suporte a projetos estratégicos institucionais de inovação e transformação digital.</li>
+          </ul>
+        </div>
+
+        <div class="exp-item">
+          <div class="exp-header">
+            <span class="exp-company">Aires Serviços Ambientais</span>
+            <span class="exp-period">2019 — 2021</span>
+          </div>
+          <div class="exp-role">Coordenador de Tecnologia da Informação</div>
+          <ul class="exp-bullets">
+            <li>Coordenação dos sistemas de TI para monitoramento ambiental e gestão interna.</li>
+            <li>Automação de relatórios de qualidade do ar em <strong>Power BI</strong> com múltiplas fontes integradas.</li>
+            <li>Implementação de páginas em <strong>SharePoint</strong> para disponibilização de documentos a stakeholders.</li>
+            <li>Automação de fluxos com <strong>Power Automate</strong> e criação de apps com <strong>Power Apps</strong>.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- PROJECTS -->
+      <div class="section">
+        <div class="section-title">Projetos · Data &amp; ML</div>
+
+        <div class="project-item">
+          <div class="project-name">Pipeline de Manutenção Preditiva — BigQuery ML</div>
+          <p>Pipeline ETL/ELT para ingestão de dados de telemetria no BigQuery. Feature engineering e treino de modelos supervisionados (Regressão Logística, Boosted Trees). Avaliação com AUC e F1-Score para priorizar intervenções de manutenção.</p>
+        </div>
+
+        <div class="project-item">
+          <div class="project-name">Análise de Consumo de Energia — BigQuery + Looker</div>
+          <p>Queries SQL analíticas para aggregação e transformação de grandes volumes de dados de medidores inteligentes. Modelagem em LookML e dashboards interativos com análise de sazonalidade, picos de consumo e segmentação de clientes.</p>
+        </div>
+
+        <div class="project-item">
+          <div class="project-name">NLP + IA Generativa — Gemini no Google Cloud</div>
+          <p>Fluxo de NLP em larga escala para classificação de sentimento e extração de entidades em notícias. Integração do Gemini (LLM) via BigQuery para avaliação de percepção pública sobre energia e sustentabilidade.</p>
+        </div>
+
+        <div class="project-item">
+          <div class="project-name">Data Engineering Multi-Cloud (GCP + AWS)</div>
+          <p>Pipelines para ML e Analytics integrando GCP, AWS, Data Lake e ETL/ELT. Stack: BigQuery, Cloud Storage, Dataflow, Dataproc, Apache Beam, Looker Studio, S3, Glue, Lake Formation, Redshift.</p>
+        </div>
+      </div>
+
+    </main>
+
+    <!-- SIDE COLUMN -->
+    <aside class="side-col">
+
+      <!-- EDUCATION -->
+      <div class="side-section">
+        <div class="side-title">Formação</div>
+
+        <div class="edu-item">
+          <div class="edu-degree">Ciência de Dados</div>
+          <div class="edu-school">XP Educação · Bolsista</div>
+          <div class="edu-period">2023 — 2027 (em andamento)</div>
+        </div>
+
+        <div class="edu-item">
+          <div class="edu-degree">Engenharia de Produção</div>
+          <div class="edu-school">Fase final (TCC)</div>
+          <div class="edu-period">em conclusão</div>
+        </div>
+      </div>
+
+      <!-- SKILLS -->
+      <div class="side-section">
+        <div class="side-title">Habilidades</div>
+
+        <div class="skill-item">
+          <div class="skill-label"><span>BigQuery / SQL</span><span>●●●●●</span></div>
+          <div class="skill-bar-bg"><div class="skill-bar-fill" style="width:96%"></div></div>
+        </div>
+        <div class="skill-item">
+          <div class="skill-label"><span>GCP (BigQuery ML, Vertex AI)</span><span>●●●●●</span></div>
+          <div class="skill-bar-bg"><div class="skill-bar-fill" style="width:92%"></div></div>
+        </div>
+        <div class="skill-item">
+          <div class="skill-label"><span>AWS (S3, Glue, Redshift)</span><span>●●●●○</span></div>
+          <div class="skill-bar-bg"><div class="skill-bar-fill" style="width:85%"></div></div>
+        </div>
+        <div class="skill-item">
+          <div class="skill-label"><span>Python / Pandas / Scikit-Learn</span><span>●●●●○</span></div>
+          <div class="skill-bar-bg"><div class="skill-bar-fill" style="width:82%"></div></div>
+        </div>
+        <div class="skill-item">
+          <div class="skill-label"><span>Looker / LookML</span><span>●●●●●</span></div>
+          <div class="skill-bar-bg"><div class="skill-bar-fill" style="width:90%"></div></div>
+        </div>
+        <div class="skill-item">
+          <div class="skill-label"><span>Power BI / DAX</span><span>●●●●○</span></div>
+          <div class="skill-bar-bg"><div class="skill-bar-fill" style="width:80%"></div></div>
+        </div>
+        <div class="skill-item">
+          <div class="skill-label"><span>ETL/ELT · Pipelines</span><span>●●●●●</span></div>
+          <div class="skill-bar-bg"><div class="skill-bar-fill" style="width:94%"></div></div>
+        </div>
+        <div class="skill-item">
+          <div class="skill-label"><span>Machine Learning</span><span>●●●●○</span></div>
+          <div class="skill-bar-bg"><div class="skill-bar-fill" style="width:78%"></div></div>
+        </div>
+      </div>
+
+      <!-- CERTIFICATIONS -->
+      <div class="side-section">
+        <div class="side-title">Certificações</div>
+
+        <div class="cert-item">
+          <div class="cert-icon ms">MS</div>
+          <div class="cert-text">
+            <strong>DP-100 · Azure Data Scientist Associate</strong>
+            Microsoft · Fev 2026
+          </div>
+        </div>
+
+        <div class="cert-item">
+          <div class="cert-icon aws">AWS</div>
+          <div class="cert-text">
+            <strong>Solutions Architect – Professional</strong>
+            AWS · Set 2023
+          </div>
+        </div>
+
+        <div class="cert-item">
+          <div class="cert-icon aws">AWS</div>
+          <div class="cert-text">
+            <strong>AI Practitioner</strong>
+            AWS · Dez 2024
+          </div>
+        </div>
+
+        <div class="cert-item">
+          <div class="cert-icon aws">AWS</div>
+          <div class="cert-text">
+            <strong>Solutions Architect – Associate</strong>
+            AWS · Mai 2023
+          </div>
+        </div>
+
+        <div class="cert-item">
+          <div class="cert-icon gcp">GCP</div>
+          <div class="cert-text">
+            <strong>Google Advanced Data Analytics</strong>
+            Google · Jun 2025
+          </div>
+        </div>
+
+        <div class="cert-item">
+          <div class="cert-icon gcp">GCP</div>
+          <div class="cert-text">
+            <strong>BigQuery ML · Vertex AI · Looker</strong>
+            Google Skill Badges · 2025
+          </div>
+        </div>
+
+        <div class="cert-item">
+          <div class="cert-icon other">EN</div>
+          <div class="cert-text">
+            <strong>C1 Advanced English</strong>
+            International English Test · Jul 2025
+          </div>
+        </div>
+
+        <div class="cert-item">
+          <div class="cert-icon other">IT</div>
+          <div class="cert-text">
+            <strong>ITIL Foundation</strong>
+            EXIN · Jan 2017
+          </div>
+        </div>
+      </div>
+
+      <!-- LANGUAGES -->
+      <div class="side-section">
+        <div class="side-title">Idiomas</div>
+        <div class="lang-item">
+          <span>Português</span>
+          <div class="lang-level">
+            <div class="lang-dot active"></div>
+            <div class="lang-dot active"></div>
+            <div class="lang-dot active"></div>
+            <div class="lang-dot active"></div>
+            <div class="lang-dot active"></div>
+          </div>
+        </div>
+        <div class="lang-item">
+          <span>Inglês <em style="font-size:8px;opacity:0.6">(C1)</em></span>
+          <div class="lang-level">
+            <div class="lang-dot active"></div>
+            <div class="lang-dot active"></div>
+            <div class="lang-dot active"></div>
+            <div class="lang-dot active"></div>
+            <div class="lang-dot"></div>
+          </div>
+        </div>
+      </div>
+
+    </aside>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <p>VINÍCIUS MILERE MOREIRA · VITÓRIA/ES · 2026</p>
+    <span class="vinyl">♫ DATA SPEAKS, SKILLS FLOW ♫</span>
+  </footer>
+
+</div>
+</body>
+</html>
